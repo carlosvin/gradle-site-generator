@@ -1,5 +1,7 @@
 package com.site.tasks
 
+import java.nio.file.Paths
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
@@ -19,7 +21,12 @@ class BuildDir extends DefaultTask {
 
     @TaskAction
     void build() {
-        print(siteName.get())
+		println("Site Name: ${siteName.get()}")
+        outputDir = Paths.get(project.buildDir.getPath(), siteName.get()).toFile()
+        if (!outputDir.exists()) {
+            outputDir.mkdir()
+
+        }
         /*outputDir = fileTree(siteName.get())
         def names = []
         fileTree(outputDir).visit { FileVisitDetails details ->

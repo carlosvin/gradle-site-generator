@@ -5,6 +5,7 @@ import static org.gradle.testkit.runner.TaskOutcome.*
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import java.nio.file.Paths
 
 class SitePluginTest extends Specification {
     @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -16,12 +17,13 @@ class SitePluginTest extends Specification {
 
     def "build"() {
         given:
+		def siteName = 'ASDF'
         buildFile << """
             plugins {
                 id 'static-site-generator'
             }
             configuration {
-                siteName = 'ASDF'
+                siteName = '$siteName'
             }
         """
 
@@ -29,11 +31,12 @@ class SitePluginTest extends Specification {
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
                 .withPluginClasspath()
-                .withArguments('tasks', 'build')
+                .withArguments('build')
                 .build()
 
         then:
-        result.output.contains('ASDF')
+        result.output.contains(siteName)
         result.task(":build").outcome == SUCCESS
+        //new File('ASDF').exists()
     }
 }
